@@ -19,7 +19,7 @@ final class AppState: ObservableObject {
     @Published var selectedWhisperModel: String = UserDefaults.standard.string(forKey: "whisperModel") ?? "base"
     @Published var selectedLanguage: String = UserDefaults.standard.string(forKey: "language") ?? "auto"
     @Published var aiCleanupEnabled: Bool = UserDefaults.standard.bool(forKey: "aiCleanup")
-    @Published var hotkeyMode: HotkeyMode = HotkeyMode(rawValue: UserDefaults.standard.string(forKey: "hotkeyMode") ?? "") ?? .doubleTap
+    @Published var hotkeyMode: HotkeyMode = HotkeyMode(rawValue: UserDefaults.standard.string(forKey: "hotkeyMode") ?? "") ?? .holdToTalk
 
     func save() {
         UserDefaults.standard.set(selectedWhisperModel, forKey: "whisperModel")
