@@ -1,67 +1,64 @@
 import Cocoa
-import ApplicationServices
 import Carbon.HIToolbox
+import UserNotifications
 
 final class TextOutput {
 
     func type(_ text: String) {
-        print("📋 [TextOutput] Attempting to type: \"\(text)\"")
+        print("📋 [TextOutput] Typing: \"\(text.prefix(60))...\"")
 
-        if insertViaAccessibility(text) {
+        // Strategy 1: Try Accessibility API (best — inserts at cursor)
+        if AXIsProcessTrusted() && insertViaAccessibility(text) {
             print("✅ [TextOutput] Inserted via Accessibility API")
             return
         }
 
-        print("📋 [TextOutput] AX failed, trying clipboard paste...")
-        insertViaClipboard(text)
-    }
-
-    // MARK: - Accessibility API (primary)
-
-    private func insertViaAccessibility(_ text: String) -> Bool {
-        guard AXIsProcessTrusted() else {
-            print("📋 [TextOutput] AX not trusted, skipping")
-            return false
+        // Strategy 2: Clipboard + CGEvent Cmd+V
+        if pasteViaClipboard(text, method: .cgEvent) {
+            print("✅ [TextOutput] Pasted via CGEvent Cmd+V")
+            return
         }
 
+        // Strategy 3: Clipboard + key simulation via CGEvent source
+        if pasteViaClipboard(text, method: .keyboardEvent) {
+            print("✅ [TextOutput] Pasted via keyboard event")
+            return
+        }
+
+        // Strategy 4: Just put it on clipboard and notify
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        print("📋 [TextOutput] Text copied to clipboard — press Cmd+V to paste")
+
+        // Show a brief notification
+        showCopiedNotification()
+    }
+
+    // MARK: - Accessibility API
+
+    private func insertViaAccessibility(_ text: String) -> Bool {
         let systemWide = AXUIElementCreateSystemWide()
 
         var focusedElement: AnyObject?
-        let focusResult = AXUIElementCopyAttributeValue(
-            systemWide,
-            kAXFocusedUIElementAttribute as CFString,
-            &focusedElement
-        )
-        guard focusResult == .success, let element = focusedElement else {
-            print("📋 [TextOutput] No focused element found")
-            return false
-        }
+        guard AXUIElementCopyAttributeValue(systemWide, kAXFocusedUIElementAttribute as CFString, &focusedElement) == .success,
+              let element = focusedElement else { return false }
 
         let axElement = element as! AXUIElement
 
         var settable: DarwinBoolean = false
         AXUIElementIsAttributeSettable(axElement, kAXValueAttribute as CFString, &settable)
-        guard settable.boolValue else {
-            print("📋 [TextOutput] Focused element value not settable")
-            return false
-        }
+        guard settable.boolValue else { return false }
 
         var currentValue: AnyObject?
-        let valueResult = AXUIElementCopyAttributeValue(axElement, kAXValueAttribute as CFString, &currentValue)
-        guard valueResult == .success, let currentText = currentValue as? String else {
-            return false
-        }
+        guard AXUIElementCopyAttributeValue(axElement, kAXValueAttribute as CFString, &currentValue) == .success,
+              let currentText = currentValue as? String else { return false }
 
         var rangeValue: AnyObject?
-        let rangeResult = AXUIElementCopyAttributeValue(axElement, kAXSelectedTextRangeAttribute as CFString, &rangeValue)
-        guard rangeResult == .success, let rangeRef = rangeValue else {
-            return false
-        }
+        guard AXUIElementCopyAttributeValue(axElement, kAXSelectedTextRangeAttribute as CFString, &rangeValue) == .success,
+              let rangeRef = rangeValue else { return false }
 
         var cfRange = CFRange(location: 0, length: 0)
-        guard AXValueGetValue(rangeRef as! AXValue, .cfRange, &cfRange) else {
-            return false
-        }
+        guard AXValueGetValue(rangeRef as! AXValue, .cfRange, &cfRange) else { return false }
 
         let startIndex = currentText.index(currentText.startIndex, offsetBy: min(cfRange.location, currentText.count))
         let endIndex = currentText.index(startIndex, offsetBy: min(cfRange.length, currentText.count - cfRange.location))
@@ -69,56 +66,68 @@ final class TextOutput {
         var newText = currentText
         newText.replaceSubrange(startIndex..<endIndex, with: text)
 
-        let setResult = AXUIElementSetAttributeValue(axElement, kAXValueAttribute as CFString, newText as CFTypeRef)
-        guard setResult == .success else { return false }
+        guard AXUIElementSetAttributeValue(axElement, kAXValueAttribute as CFString, newText as CFTypeRef) == .success else { return false }
 
         let newCursorLocation = cfRange.location + text.count
         var newRange = CFRange(location: newCursorLocation, length: 0)
         if let newRangeValue = AXValueCreate(.cfRange, &newRange) {
             AXUIElementSetAttributeValue(axElement, kAXSelectedTextRangeAttribute as CFString, newRangeValue)
         }
-
         return true
     }
 
-    // MARK: - Clipboard paste (fallback)
+    // MARK: - Clipboard Paste
 
-    private func insertViaClipboard(_ text: String) {
+    private enum PasteMethod {
+        case cgEvent
+        case keyboardEvent
+    }
+
+    private func pasteViaClipboard(_ text: String, method: PasteMethod) -> Bool {
         let pasteboard = NSPasteboard.general
-
-        // Save current clipboard
         let previousString = pasteboard.string(forType: .string)
 
-        // Set our text
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
-        print("📋 [TextOutput] Text copied to clipboard")
 
-        // Try multiple paste methods
-        if simulatePasteViaCGEvent() {
-            print("✅ [TextOutput] Pasted via CGEvent")
-        } else if simulatePasteViaAppleScript() {
-            print("✅ [TextOutput] Pasted via AppleScript")
-        } else {
-            print("⚠️ [TextOutput] Auto-paste failed — text is on clipboard, Cmd+V to paste manually")
+        let success: Bool
+        switch method {
+        case .cgEvent:
+            success = simulateCmdV()
+        case .keyboardEvent:
+            success = simulateCmdVViaKeyEvent()
         }
 
         // Restore clipboard after delay
-        if let previous = previousString {
+        if success, let previous = previousString {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 pasteboard.clearContents()
                 pasteboard.setString(previous, forType: .string)
             }
         }
+
+        return success
     }
 
-    private func simulatePasteViaCGEvent() -> Bool {
+    private func simulateCmdV() -> Bool {
+        let source = CGEventSource(stateID: .combinedSessionState)
+        guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),
+              let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false) else {
+            return false
+        }
+        keyDown.flags = .maskCommand
+        keyUp.flags = .maskCommand
+        keyDown.post(tap: .cgAnnotatedSessionEventTap)
+        keyUp.post(tap: .cgAnnotatedSessionEventTap)
+        return true
+    }
+
+    private func simulateCmdVViaKeyEvent() -> Bool {
         let source = CGEventSource(stateID: .hidSystemState)
         guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),
               let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false) else {
             return false
         }
-
         keyDown.flags = .maskCommand
         keyUp.flags = .maskCommand
         keyDown.post(tap: .cghidEventTap)
@@ -126,14 +135,13 @@ final class TextOutput {
         return true
     }
 
-    private func simulatePasteViaAppleScript() -> Bool {
-        let script = NSAppleScript(source: """
-            tell application "System Events"
-                keystroke "v" using command down
-            end tell
-        """)
-        var error: NSDictionary?
-        script?.executeAndReturnError(&error)
-        return error == nil
+    // MARK: - Notification
+
+    private func showCopiedNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Vox"
+        content.body = "Transcription copied — Cmd+V to paste"
+        let request = UNNotificationRequest(identifier: "vox-copied", content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(request)
     }
 }

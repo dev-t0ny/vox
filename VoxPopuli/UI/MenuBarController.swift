@@ -246,12 +246,28 @@ final class MenuBarController: NSObject {
         NSApplication.shared.terminate(nil)
     }
 
-    // MARK: - Dot Icon
+    // MARK: - Icon
 
     private func dotImage(color: NSColor, alpha: CGFloat = 1.0) -> NSImage {
+        // Use SF Symbol microphone icon — much more visible than a tiny dot
+        if let image = NSImage(systemSymbolName: "mic.fill", accessibilityDescription: "Vox") {
+            let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium)
+            let configured = image.withSymbolConfiguration(config) ?? image
+            // Tint the image
+            let tinted = NSImage(size: configured.size, flipped: false) { rect in
+                configured.draw(in: rect)
+                color.withAlphaComponent(alpha).set()
+                rect.fill(using: .sourceAtop)
+                return true
+            }
+            tinted.isTemplate = false
+            return tinted
+        }
+
+        // Fallback: colored dot
         let size = NSSize(width: 18, height: 18)
         let image = NSImage(size: size, flipped: false) { rect in
-            let dotSize: CGFloat = 8
+            let dotSize: CGFloat = 10
             let origin = NSPoint(x: (rect.width - dotSize) / 2, y: (rect.height - dotSize) / 2)
             let dotRect = NSRect(origin: origin, size: NSSize(width: dotSize, height: dotSize))
             NSBezierPath(ovalIn: dotRect).fill(using: color.withAlphaComponent(alpha))
