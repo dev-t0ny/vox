@@ -2,7 +2,7 @@ import Cocoa
 
 final class WaveformView: NSView {
 
-    private let barCount = 32
+    private let barCount = 40
     private var rmsHistory: [Float] = []
     private var historyIndex: Int = 0
     private var smoothedLevels: [Float] = []
@@ -70,8 +70,8 @@ final class WaveformView: NSView {
         animationPhase += 0.04
 
         let count = barCount
-        let spacing: CGFloat = 2.0
-        let barWidth = (bounds.width - spacing * CGFloat(count - 1)) / CGFloat(count)
+        let barWidth: CGFloat = 2.0
+        let spacing = (bounds.width - barWidth * CGFloat(count)) / CGFloat(count - 1)
         let centerY = bounds.height / 2.0
 
         for i in 0..<count {
@@ -103,7 +103,7 @@ final class WaveformView: NSView {
             let alpha = 0.5 + 0.5 * t
 
             ctx.setFillColor(CGColor(red: r, green: g, blue: b, alpha: alpha))
-            let radius = min(barWidth / 2, 3.0)
+            let radius: CGFloat = 1.0
             ctx.addPath(CGPath(roundedRect: barRect, cornerWidth: radius, cornerHeight: radius, transform: nil))
             ctx.fillPath()
         }
