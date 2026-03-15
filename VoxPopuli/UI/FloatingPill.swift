@@ -95,6 +95,10 @@ final class FloatingPill {
         }
     }
 
+    func resetWaveform() {
+        waveformView?.reset()
+    }
+
     func updateRMS(_ rms: Float) {
         waveformView?.rmsLevel = rms
     }

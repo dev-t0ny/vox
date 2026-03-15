@@ -86,6 +86,7 @@ final class TranscriptionPipeline {
             try audioPipeline.startCapture()
             recordingStartTime = Date()
             appState.status = .listening
+            floatingPill.resetWaveform()
             floatingPill.show(near: NSEvent.mouseLocation)
             print("🎙️ [Pipeline] Recording started")
         } catch {

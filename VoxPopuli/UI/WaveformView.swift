@@ -50,6 +50,13 @@ final class WaveformView: NSView {
         displayLink = nil
     }
 
+    func reset() {
+        rmsHistory = [Float](repeating: 0.0, count: barCount)
+        smoothedLevels = [Float](repeating: 0.0, count: barCount)
+        historyIndex = 0
+        animationPhase = 0
+    }
+
     private func appendToHistory(_ value: Float) {
         guard rmsHistory.count == barCount else { return }
         rmsHistory[historyIndex % barCount] = value

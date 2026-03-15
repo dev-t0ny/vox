@@ -22,11 +22,10 @@ final class HotkeyManager {
 
     weak var delegate: HotkeyManagerDelegate?
     var mode: HotkeyMode = .doubleTap
-    var targetKeyCode: CGKeyCode = 58 // Left Option (kVK_Option)
+    var targetKeyCode: UInt16 = 58 // Left Option (kVK_Option)
 
-    fileprivate var eventTap: CFMachPort?
-    private var runLoopSource: CFRunLoopSource?
-    private var accessibilityPollTimer: Timer?
+    private var globalMonitor: Any?
+    private var localMonitor: Any?
 
     // Double-tap tracking
     private var lastKeyUpTime: TimeInterval = 0
@@ -41,96 +40,61 @@ final class HotkeyManager {
     // Active state
     private(set) var isActive: Bool = false
 
+    var isAccessibilityGranted: Bool {
+        AXIsProcessTrusted()
+    }
+
     // MARK: - Start / Stop
 
     func start() {
-        if AXIsProcessTrusted() {
-            installEventTap()
-        } else {
-            requestAccessibilityPermission()
-            pollForAccessibility()
-        }
+        print("🎙️ [Hotkey] Starting with NSEvent global monitor (no CGEvent tap needed)")
+        installMonitors()
     }
 
     func stop() {
-        accessibilityPollTimer?.invalidate()
-        accessibilityPollTimer = nil
-        removeEventTap()
+        removeMonitors()
     }
 
-    // MARK: - Accessibility Bootstrap
+    // MARK: - NSEvent Monitors
 
-    private func requestAccessibilityPermission() {
-        let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
-        let options = [key: true] as CFDictionary
-        AXIsProcessTrustedWithOptions(options)
-    }
+    private func installMonitors() {
+        // Global monitor — catches events when our app is NOT focused
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            self?.handleFlagsChanged(event)
+        }
 
-    private func pollForAccessibility() {
-        accessibilityPollTimer?.invalidate()
-        accessibilityPollTimer = Timer.scheduledTimer(
-            withTimeInterval: 2.0,
-            repeats: true
-        ) { [weak self] timer in
-            if AXIsProcessTrusted() {
-                timer.invalidate()
-                self?.accessibilityPollTimer = nil
-                self?.installEventTap()
-            }
+        // Local monitor — catches events when our app IS focused (e.g. settings popover open)
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+            self?.handleFlagsChanged(event)
+            return event
+        }
+
+        if globalMonitor != nil {
+            print("✅ [Hotkey] Global monitor installed")
+        } else {
+            print("❌ [Hotkey] Global monitor FAILED — accessibility may not be granted")
         }
     }
 
-    // MARK: - Event Tap
-
-    private func installEventTap() {
-        guard eventTap == nil else { return }
-
-        let mask: CGEventMask = 1 << CGEventType.flagsChanged.rawValue
-
-        // Use an unretained pointer to self for the callback
-        let refcon = Unmanaged.passUnretained(self).toOpaque()
-
-        guard let tap = CGEvent.tapCreate(
-            tap: .cgSessionEventTap,
-            place: .headInsertEventTap,
-            options: .defaultTap,
-            eventsOfInterest: mask,
-            callback: hotkeyEventCallback,
-            userInfo: refcon
-        ) else {
-            return
+    private func removeMonitors() {
+        if let monitor = globalMonitor {
+            NSEvent.removeMonitor(monitor)
+            globalMonitor = nil
         }
-
-        eventTap = tap
-        runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
-
-        if let source = runLoopSource {
-            CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
+        if let monitor = localMonitor {
+            NSEvent.removeMonitor(monitor)
+            localMonitor = nil
         }
-
-        CGEvent.tapEnable(tap: tap, enable: true)
-    }
-
-    private func removeEventTap() {
-        if let tap = eventTap {
-            CGEvent.tapEnable(tap: tap, enable: false)
-            if let source = runLoopSource {
-                CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
-            }
-        }
-        eventTap = nil
-        runLoopSource = nil
     }
 
     // MARK: - Event Handling
 
-    fileprivate func handleFlagsChanged(_ event: CGEvent) {
-        let keyCode = CGKeyCode(event.getIntegerValueField(.keyboardEventKeycode))
+    private func handleFlagsChanged(_ event: NSEvent) {
+        let keyCode = event.keyCode
         guard keyCode == targetKeyCode else { return }
 
-        let flags = event.flags
-        // Right Option is flagged as .maskAlternate. Key down when flag is present.
-        let isKeyDown = flags.contains(.maskAlternate)
+        let isKeyDown = event.modifierFlags.contains(.option)
+        print("🎹 [Hotkey] Left Option \(isKeyDown ? "DOWN" : "UP") (mode: \(mode.rawValue))")
 
         switch mode {
         case .doubleTap:
@@ -146,7 +110,6 @@ final class HotkeyManager {
 
     private func handleDoubleTap(isKeyDown: Bool) {
         if !isKeyDown {
-            // Key up — check for double-tap
             let now = ProcessInfo.processInfo.systemUptime
             let elapsed = now - lastKeyUpTime
             lastKeyUpTime = now
@@ -157,7 +120,6 @@ final class HotkeyManager {
                 } else {
                     activate()
                 }
-                // Reset to prevent triple-tap from toggling again
                 lastKeyUpTime = 0
             }
         }
@@ -190,44 +152,18 @@ final class HotkeyManager {
     private func activate() {
         guard !isActive else { return }
         isActive = true
+        print("🎙️ [Hotkey] >>> ACTIVATED")
         delegate?.hotkeyManagerDidActivate(self)
     }
 
     private func deactivate() {
         guard isActive else { return }
         isActive = false
+        print("🎙️ [Hotkey] <<< DEACTIVATED")
         delegate?.hotkeyManagerDidDeactivate(self)
     }
 
     deinit {
         stop()
     }
-}
-
-// MARK: - C callback
-
-private func hotkeyEventCallback(
-    proxy: CGEventTapProxy,
-    type: CGEventType,
-    event: CGEvent,
-    refcon: UnsafeMutableRawPointer?
-) -> Unmanaged<CGEvent>? {
-    guard let refcon = refcon else {
-        return Unmanaged.passUnretained(event)
-    }
-
-    let manager = Unmanaged<HotkeyManager>.fromOpaque(refcon).takeUnretainedValue()
-
-    if type == .flagsChanged {
-        manager.handleFlagsChanged(event)
-    }
-
-    // If the tap is disabled by the system, re-enable it
-    if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-        if let tap = manager.eventTap {
-            CGEvent.tapEnable(tap: tap, enable: true)
-        }
-    }
-
-    return Unmanaged.passUnretained(event)
 }
