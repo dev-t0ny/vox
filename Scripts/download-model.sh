@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Model download script for Vox Populi
+# Model download script for Vox
 # Downloads Whisper GGML models from HuggingFace
 
 BASE_URL="https://huggingface.co/ggerganov/whisper.cpp/resolve/main"

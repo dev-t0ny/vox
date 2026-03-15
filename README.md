@@ -1,8 +1,8 @@
-# Vox Populi
+# Vox
 
 **Your voice, your machine, no one else's business.**
 
-Vox Populi is a fully offline, macOS-native voice-to-text app. Speak naturally and your words appear wherever the cursor is -- in any app, any text field. Everything runs locally on your Mac using whisper.cpp for speech recognition and an optional llama.cpp-powered AI cleanup pass.
+Vox is a fully offline, macOS-native voice-to-text app. Speak naturally and your words appear wherever the cursor is -- in any app, any text field. Everything runs locally on your Mac using whisper.cpp for speech recognition and an optional llama.cpp-powered AI cleanup pass.
 
 ## Features
 
@@ -83,7 +83,7 @@ Right-click the menu bar icon to access:
 
 ## Privacy
 
-Vox Populi makes **zero network requests** after the initial model download. There is no analytics, no telemetry, no crash reporting, and no data collection of any kind. Your voice data never leaves your machine.
+Vox makes **zero network requests** after the initial model download. There is no analytics, no telemetry, no crash reporting, and no data collection of any kind. Your voice data never leaves your machine.
 
 ## License
 

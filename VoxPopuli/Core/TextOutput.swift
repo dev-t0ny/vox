@@ -1,19 +1,29 @@
 import Cocoa
 import ApplicationServices
+import Carbon.HIToolbox
 
 final class TextOutput {
 
-    /// Insert text at the cursor position in the frontmost application.
-    /// Tries Accessibility API first, falls back to clipboard paste.
     func type(_ text: String) {
-        if !insertViaAccessibility(text) {
-            insertViaClipboard(text)
+        print("📋 [TextOutput] Attempting to type: \"\(text)\"")
+
+        if insertViaAccessibility(text) {
+            print("✅ [TextOutput] Inserted via Accessibility API")
+            return
         }
+
+        print("📋 [TextOutput] AX failed, trying clipboard paste...")
+        insertViaClipboard(text)
     }
 
     // MARK: - Accessibility API (primary)
 
     private func insertViaAccessibility(_ text: String) -> Bool {
+        guard AXIsProcessTrusted() else {
+            print("📋 [TextOutput] AX not trusted, skipping")
+            return false
+        }
+
         let systemWide = AXUIElementCreateSystemWide()
 
         var focusedElement: AnyObject?
@@ -23,40 +33,27 @@ final class TextOutput {
             &focusedElement
         )
         guard focusResult == .success, let element = focusedElement else {
+            print("📋 [TextOutput] No focused element found")
             return false
         }
 
         let axElement = element as! AXUIElement
 
-        // Check if kAXValueAttribute is settable
         var settable: DarwinBoolean = false
-        let settableResult = AXUIElementIsAttributeSettable(
-            axElement,
-            kAXValueAttribute as CFString,
-            &settable
-        )
-        guard settableResult == .success, settable.boolValue else {
+        AXUIElementIsAttributeSettable(axElement, kAXValueAttribute as CFString, &settable)
+        guard settable.boolValue else {
+            print("📋 [TextOutput] Focused element value not settable")
             return false
         }
 
-        // Read the current text value
         var currentValue: AnyObject?
-        let valueResult = AXUIElementCopyAttributeValue(
-            axElement,
-            kAXValueAttribute as CFString,
-            &currentValue
-        )
+        let valueResult = AXUIElementCopyAttributeValue(axElement, kAXValueAttribute as CFString, &currentValue)
         guard valueResult == .success, let currentText = currentValue as? String else {
             return false
         }
 
-        // Read the selected text range (cursor position)
         var rangeValue: AnyObject?
-        let rangeResult = AXUIElementCopyAttributeValue(
-            axElement,
-            kAXSelectedTextRangeAttribute as CFString,
-            &rangeValue
-        )
+        let rangeResult = AXUIElementCopyAttributeValue(axElement, kAXSelectedTextRangeAttribute as CFString, &rangeValue)
         guard rangeResult == .success, let rangeRef = rangeValue else {
             return false
         }
@@ -66,41 +63,20 @@ final class TextOutput {
             return false
         }
 
-        // Perform string surgery: insert text at cursor position
-        let startIndex = currentText.index(
-            currentText.startIndex,
-            offsetBy: min(cfRange.location, currentText.count)
-        )
-        let endIndex = currentText.index(
-            startIndex,
-            offsetBy: min(cfRange.length, currentText.count - cfRange.location)
-        )
+        let startIndex = currentText.index(currentText.startIndex, offsetBy: min(cfRange.location, currentText.count))
+        let endIndex = currentText.index(startIndex, offsetBy: min(cfRange.length, currentText.count - cfRange.location))
 
         var newText = currentText
         newText.replaceSubrange(startIndex..<endIndex, with: text)
 
-        // Write back the modified string
-        let setResult = AXUIElementSetAttributeValue(
-            axElement,
-            kAXValueAttribute as CFString,
-            newText as CFTypeRef
-        )
-        guard setResult == .success else {
-            return false
-        }
+        let setResult = AXUIElementSetAttributeValue(axElement, kAXValueAttribute as CFString, newText as CFTypeRef)
+        guard setResult == .success else { return false }
 
-        // Move cursor to after the inserted text
         let newCursorLocation = cfRange.location + text.count
         var newRange = CFRange(location: newCursorLocation, length: 0)
-        guard let newRangeValue = AXValueCreate(.cfRange, &newRange) else {
-            return true // Text was inserted, cursor positioning is non-critical
+        if let newRangeValue = AXValueCreate(.cfRange, &newRange) {
+            AXUIElementSetAttributeValue(axElement, kAXSelectedTextRangeAttribute as CFString, newRangeValue)
         }
-
-        AXUIElementSetAttributeValue(
-            axElement,
-            kAXSelectedTextRangeAttribute as CFString,
-            newRangeValue
-        )
 
         return true
     }
@@ -110,44 +86,54 @@ final class TextOutput {
     private func insertViaClipboard(_ text: String) {
         let pasteboard = NSPasteboard.general
 
-        // Save current clipboard contents
-        let savedItems = pasteboard.pasteboardItems?.compactMap { item -> (String, Data)? in
-            guard let type = item.types.first,
-                  let data = item.data(forType: type) else { return nil }
-            return (type.rawValue, data)
-        } ?? []
+        // Save current clipboard
+        let previousString = pasteboard.string(forType: .string)
 
-        // Set transcribed text to clipboard
+        // Set our text
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
+        print("📋 [TextOutput] Text copied to clipboard")
 
-        // Simulate Cmd+V
-        simulatePaste()
+        // Try multiple paste methods
+        if simulatePasteViaCGEvent() {
+            print("✅ [TextOutput] Pasted via CGEvent")
+        } else if simulatePasteViaAppleScript() {
+            print("✅ [TextOutput] Pasted via AppleScript")
+        } else {
+            print("⚠️ [TextOutput] Auto-paste failed — text is on clipboard, Cmd+V to paste manually")
+        }
 
-        // Restore clipboard after 500ms
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            pasteboard.clearContents()
-            for (typeRaw, data) in savedItems {
-                let type = NSPasteboard.PasteboardType(typeRaw)
-                pasteboard.setData(data, forType: type)
+        // Restore clipboard after delay
+        if let previous = previousString {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                pasteboard.clearContents()
+                pasteboard.setString(previous, forType: .string)
             }
         }
     }
 
-    private func simulatePaste() {
-        let vKeyCode: CGKeyCode = 9 // 'v' key
-
+    private func simulatePasteViaCGEvent() -> Bool {
         let source = CGEventSource(stateID: .hidSystemState)
-
-        guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: vKeyCode, keyDown: true),
-              let keyUp = CGEvent(keyboardEventSource: source, virtualKey: vKeyCode, keyDown: false) else {
-            return
+        guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),
+              let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false) else {
+            return false
         }
 
         keyDown.flags = .maskCommand
         keyUp.flags = .maskCommand
-
         keyDown.post(tap: .cghidEventTap)
         keyUp.post(tap: .cghidEventTap)
+        return true
+    }
+
+    private func simulatePasteViaAppleScript() -> Bool {
+        let script = NSAppleScript(source: """
+            tell application "System Events"
+                keystroke "v" using command down
+            end tell
+        """)
+        var error: NSDictionary?
+        script?.executeAndReturnError(&error)
+        return error == nil
     }
 }

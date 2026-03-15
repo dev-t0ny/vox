@@ -18,7 +18,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 12) {
 
             // MARK: - Header
-            Text("Vox Populi")
+            Text("Vox")
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .center)
 

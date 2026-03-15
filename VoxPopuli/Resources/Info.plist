@@ -9,7 +9,7 @@
     <key>CFBundleIdentifier</key>
     <string>com.voxpopuli.app</string>
     <key>CFBundleName</key>
-    <string>Vox Populi</string>
+    <string>Vox</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -21,6 +21,6 @@
     <key>LSUIElement</key>
     <true/>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Vox Populi needs microphone access to transcribe your speech into text.</string>
+    <string>Vox needs microphone access to transcribe your speech into text.</string>
 </dict>
 </plist>

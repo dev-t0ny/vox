@@ -8,6 +8,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var pipeline: TranscriptionPipeline!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        print("🎙️ Vox launching...")
+
         appState = AppState()
         modelManager = ModelManager()
         pipeline = TranscriptionPipeline(appState: appState, modelManager: modelManager)
@@ -15,17 +17,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hotkeyManager = HotkeyManager()
 
         menuBarController.setup()
+        print("🎙️ Menu bar dot created")
+
         menuBarController.onLeftClick = { [weak self] in self?.toggleRecording() }
 
         hotkeyManager.delegate = self
         hotkeyManager.mode = appState.hotkeyMode
+        print("🎙️ Hotkey mode: \(appState.hotkeyMode.rawValue)")
         hotkeyManager.start()
 
         if !AXIsProcessTrusted() {
+            print("⚠️ Accessibility NOT granted — hotkey won't work until you grant it in System Settings > Privacy > Accessibility")
             appState.status = .waitingForPermission
+        } else {
+            print("✅ Accessibility granted")
         }
 
         pipeline.loadModel()
+        print("🎙️ Loading model: \(appState.selectedWhisperModel)")
     }
 
     private func toggleRecording() {
@@ -39,9 +48,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: HotkeyManagerDelegate {
     func hotkeyManagerDidActivate(_ manager: HotkeyManager) {
+        print("🎙️ HOTKEY ACTIVATED — starting recording")
         DispatchQueue.main.async { [weak self] in self?.pipeline.startRecording() }
     }
     func hotkeyManagerDidDeactivate(_ manager: HotkeyManager) {
+        print("🎙️ HOTKEY DEACTIVATED — stopping recording")
         DispatchQueue.main.async { [weak self] in self?.pipeline.stopRecording() }
     }
 }

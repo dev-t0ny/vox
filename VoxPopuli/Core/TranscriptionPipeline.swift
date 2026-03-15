@@ -71,19 +71,27 @@ final class TranscriptionPipeline {
     }
 
     func startRecording() {
-        guard whisperEngine.isLoaded else { return }
+        guard whisperEngine.isLoaded else {
+            print("❌ [Pipeline] Model not loaded, can't record")
+            return
+        }
         do {
             try audioPipeline.startCapture()
             appState.status = .listening
             floatingPill.show(near: NSEvent.mouseLocation)
+            print("🎙️ [Pipeline] Recording started")
         } catch {
+            print("❌ [Pipeline] Mic error: \(error)")
             appState.status = .error(message: "Mic error: \(error.localizedDescription)")
         }
     }
 
     func stopRecording() {
         let samples = audioPipeline.stopCapture()
+        print("🎙️ [Pipeline] Stopped recording, got \(samples.count) samples (\(String(format: "%.1f", Double(samples.count) / 16000.0))s audio)")
+
         guard !samples.isEmpty else {
+            print("⚠️ [Pipeline] No audio samples captured")
             appState.status = .idle
             floatingPill.fadeOut()
             return
@@ -95,12 +103,15 @@ final class TranscriptionPipeline {
         let language = appState.selectedLanguage == "auto" ? nil : appState.selectedLanguage
         let aiCleanup = appState.aiCleanupEnabled
 
-        // ALL inference on the single shared queue
+        print("🎙️ [Pipeline] Transcribing \(samples.count) samples...")
         inferenceQueue.async { [weak self] in
             guard let self else { return }
             do {
                 let rawText = try self.whisperEngine.transcribe(samples: samples, language: language)
+                print("🎙️ [Pipeline] Whisper result: \"\(rawText)\"")
+
                 guard !rawText.isEmpty else {
+                    print("⚠️ [Pipeline] Empty transcription")
                     DispatchQueue.main.async { self.finish() }
                     return
                 }
@@ -115,11 +126,14 @@ final class TranscriptionPipeline {
                     finalText = self.voiceCommandProcessor.apply(rawText)
                 }
 
+                print("🎙️ [Pipeline] Final text: \"\(finalText)\"")
+                print("🎙️ [Pipeline] Typing text into focused app...")
                 DispatchQueue.main.async {
                     self.textOutput.type(finalText)
                     self.finish()
                 }
             } catch {
+                print("❌ [Pipeline] Transcription error: \(error)")
                 DispatchQueue.main.async {
                     self.appState.status = .error(message: error.localizedDescription)
                     self.floatingPill.fadeOut()
