@@ -1,0 +1,528 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */; };
+		6AAFE80A39F412A5C3A731BC /* VoiceCommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */; };
+		942E7857C1FB145B9B199F48 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */; };
+		DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB5589F43D617613D964813 /* VoxPopuliApp.swift */; };
+		DCF45E9CE52635131EA630CE /* RingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B51C824D820F83450265A9 /* RingBufferTests.swift */; };
+		E45C4EE7B814805858FDFE50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB00459D3DDCA8ED959572E7 /* Assets.xcassets */; };
+		FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780BC07D982648144B6F041C /* RingBuffer.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DA295201C19BBF4B4E25BD87 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E572A2444E29BE410B6515D7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B86DB7CEA0A01015A27ACE4E;
+			remoteInfo = VoxPopuli;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		02DAF41A5B9E277BA59463C0 /* VoxPopuli-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VoxPopuli-Bridging-Header.h"; sourceTree = "<group>"; };
+		182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessor.swift; sourceTree = "<group>"; };
+		27059E384C33344FF71183C0 /* VoxPopuli.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VoxPopuli.entitlements; sourceTree = "<group>"; };
+		4DB5589F43D617613D964813 /* VoxPopuliApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxPopuliApp.swift; sourceTree = "<group>"; };
+		780BC07D982648144B6F041C /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
+		882D617AA7925B96E699B858 /* VoxPopuliTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoxPopuliTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8B51C824D820F83450265A9 /* RingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBufferTests.swift; sourceTree = "<group>"; };
+		EE97C1F346BA32DA60FA28EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessorTests.swift; sourceTree = "<group>"; };
+		FB00459D3DDCA8ED959572E7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FE4B37EECC55E7AAD0C2287B /* VoxPopuli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoxPopuli.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1248B0441D12BB2E74792A61 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */,
+				4DB5589F43D617613D964813 /* VoxPopuliApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		20C2E01585D906901A0A0DE7 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				780BC07D982648144B6F041C /* RingBuffer.swift */,
+				182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		528291D08B356EAF6C158F91 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FE4B37EECC55E7AAD0C2287B /* VoxPopuli.app */,
+				882D617AA7925B96E699B858 /* VoxPopuliTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		72EF93430F04CB35A53EED1B /* VoxPopuliTests */ = {
+			isa = PBXGroup;
+			children = (
+				D8B51C824D820F83450265A9 /* RingBufferTests.swift */,
+				FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */,
+			);
+			path = VoxPopuliTests;
+			sourceTree = "<group>";
+		};
+		80BD5D1C8B3EF27095771E54 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				FB00459D3DDCA8ED959572E7 /* Assets.xcassets */,
+				EE97C1F346BA32DA60FA28EE /* Info.plist */,
+				27059E384C33344FF71183C0 /* VoxPopuli.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B1AB1ED8F3F2BC2F50B0213A /* Bridging */ = {
+			isa = PBXGroup;
+			children = (
+				02DAF41A5B9E277BA59463C0 /* VoxPopuli-Bridging-Header.h */,
+			);
+			path = Bridging;
+			sourceTree = "<group>";
+		};
+		D33086100FA38DEE01106A4F /* VoxPopuli */ = {
+			isa = PBXGroup;
+			children = (
+				1248B0441D12BB2E74792A61 /* App */,
+				B1AB1ED8F3F2BC2F50B0213A /* Bridging */,
+				20C2E01585D906901A0A0DE7 /* Core */,
+				80BD5D1C8B3EF27095771E54 /* Resources */,
+			);
+			path = VoxPopuli;
+			sourceTree = "<group>";
+		};
+		DC5F79F10918665A892E915F = {
+			isa = PBXGroup;
+			children = (
+				D33086100FA38DEE01106A4F /* VoxPopuli */,
+				72EF93430F04CB35A53EED1B /* VoxPopuliTests */,
+				528291D08B356EAF6C158F91 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B86DB7CEA0A01015A27ACE4E /* VoxPopuli */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C1752467232A76F6268E2521 /* Build configuration list for PBXNativeTarget "VoxPopuli" */;
+			buildPhases = (
+				9A566C8D489600EADB520E72 /* Sources */,
+				613C897454DAE4EC1D869958 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VoxPopuli;
+			packageProductDependencies = (
+			);
+			productName = VoxPopuli;
+			productReference = FE4B37EECC55E7AAD0C2287B /* VoxPopuli.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DBD93C9DCEF1BA9E0885518C /* VoxPopuliTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D5A112B163A0ECB90E5BE97 /* Build configuration list for PBXNativeTarget "VoxPopuliTests" */;
+			buildPhases = (
+				7854050E438CB211159D5D6E /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				16C29A7C3695047DB5963C92 /* PBXTargetDependency */,
+			);
+			name = VoxPopuliTests;
+			packageProductDependencies = (
+			);
+			productName = VoxPopuliTests;
+			productReference = 882D617AA7925B96E699B858 /* VoxPopuliTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E572A2444E29BE410B6515D7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+			};
+			buildConfigurationList = 2076222B7EE5C5D75448E2AF /* Build configuration list for PBXProject "VoxPopuli" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = DC5F79F10918665A892E915F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B86DB7CEA0A01015A27ACE4E /* VoxPopuli */,
+				DBD93C9DCEF1BA9E0885518C /* VoxPopuliTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		613C897454DAE4EC1D869958 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E45C4EE7B814805858FDFE50 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7854050E438CB211159D5D6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCF45E9CE52635131EA630CE /* RingBufferTests.swift in Sources */,
+				6AAFE80A39F412A5C3A731BC /* VoiceCommandProcessorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9A566C8D489600EADB520E72 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				942E7857C1FB145B9B199F48 /* AppDelegate.swift in Sources */,
+				FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */,
+				094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */,
+				DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		16C29A7C3695047DB5963C92 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B86DB7CEA0A01015A27ACE4E /* VoxPopuli */;
+			targetProxy = DA295201C19BBF4B4E25BD87 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		12141EC67198C13C134DE44A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/include",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/ggml/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/ggml/include",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.voxpopuli.VoxPopuliTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoxPopuli.app/Contents/MacOS/VoxPopuli";
+			};
+			name = Debug;
+		};
+		2665834B6679842A84601DBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = VoxPopuli/Resources/VoxPopuli.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/include",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/ggml/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/ggml/include",
+				);
+				INFOPLIST_FILE = VoxPopuli/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/src",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-blas",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-metal",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/src",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-blas",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-metal",
+				);
+				OTHER_LDFLAGS = (
+					"-lwhisper",
+					"-lggml",
+					"-lggml-base",
+					"-lggml-metal",
+					"-lggml-cpu",
+					"-lggml-blas",
+					"-lllama",
+					"-lc++",
+					"-framework Accelerate",
+					"-framework Metal",
+					"-framework MetalKit",
+					"-framework Foundation",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.voxpopuli.app;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "VoxPopuli/Bridging/VoxPopuli-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		3BC833829DB972B8B91FFD4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/include",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/ggml/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/ggml/include",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.voxpopuli.VoxPopuliTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoxPopuli.app/Contents/MacOS/VoxPopuli";
+			};
+			name = Release;
+		};
+		BFB21C96396B5868F7FFD79B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = VoxPopuli/Resources/VoxPopuli.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/include",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/ggml/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/include",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/ggml/include",
+				);
+				INFOPLIST_FILE = VoxPopuli/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/src",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-blas",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-metal",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/src",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-blas",
+					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-metal",
+				);
+				OTHER_LDFLAGS = (
+					"-lwhisper",
+					"-lggml",
+					"-lggml-base",
+					"-lggml-metal",
+					"-lggml-cpu",
+					"-lggml-blas",
+					"-lllama",
+					"-lc++",
+					"-framework Accelerate",
+					"-framework Metal",
+					"-framework MetalKit",
+					"-framework Foundation",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.voxpopuli.app;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "VoxPopuli/Bridging/VoxPopuli-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		C15B1F64F4CD22959E0313AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		EA33BD5F635300F7A1C54756 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2076222B7EE5C5D75448E2AF /* Build configuration list for PBXProject "VoxPopuli" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA33BD5F635300F7A1C54756 /* Debug */,
+				C15B1F64F4CD22959E0313AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3D5A112B163A0ECB90E5BE97 /* Build configuration list for PBXNativeTarget "VoxPopuliTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				12141EC67198C13C134DE44A /* Debug */,
+				3BC833829DB972B8B91FFD4D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C1752467232A76F6268E2521 /* Build configuration list for PBXNativeTarget "VoxPopuli" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2665834B6679842A84601DBA /* Debug */,
+				BFB21C96396B5868F7FFD79B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E572A2444E29BE410B6515D7 /* Project object */;
+}

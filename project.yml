@@ -57,5 +57,13 @@ targets:
     platform: macOS
     sources:
       - path: VoxPopuliTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
+        HEADER_SEARCH_PATHS:
+          - "$(PROJECT_DIR)/Libraries/whisper.cpp/include"
+          - "$(PROJECT_DIR)/Libraries/whisper.cpp/ggml/include"
+          - "$(PROJECT_DIR)/Libraries/llama.cpp/include"
+          - "$(PROJECT_DIR)/Libraries/llama.cpp/ggml/include"
     dependencies:
       - target: VoxPopuli
