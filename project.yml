@@ -1,0 +1,56 @@
+name: VoxPopuli
+options:
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+  bundleIdPrefix: com.voxpopuli
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    ENABLE_HARDENED_RUNTIME: "YES"
+    ARCHS: arm64
+    CODE_SIGN_IDENTITY: "-"
+
+targets:
+  VoxPopuli:
+    type: application
+    platform: macOS
+    sources:
+      - path: VoxPopuli
+    settings:
+      base:
+        INFOPLIST_FILE: VoxPopuli/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: VoxPopuli/Resources/VoxPopuli.entitlements
+        SWIFT_OBJC_BRIDGING_HEADER: VoxPopuli/Bridging/VoxPopuli-Bridging-Header.h
+        HEADER_SEARCH_PATHS:
+          - "$(PROJECT_DIR)/Libraries/whisper.cpp/include"
+          - "$(PROJECT_DIR)/Libraries/whisper.cpp/ggml/include"
+          - "$(PROJECT_DIR)/Libraries/llama.cpp/include"
+          - "$(PROJECT_DIR)/Libraries/llama.cpp/ggml/include"
+        LIBRARY_SEARCH_PATHS:
+          - "$(PROJECT_DIR)/Libraries/whisper.cpp/build/src"
+          - "$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src"
+          - "$(PROJECT_DIR)/Libraries/llama.cpp/build/src"
+          - "$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src"
+        OTHER_LDFLAGS:
+          - "-lwhisper"
+          - "-lggml"
+          - "-lggml-base"
+          - "-lggml-metal"
+          - "-lggml-cpu"
+          - "-lllama"
+          - "-lc++"
+          - "-framework Accelerate"
+          - "-framework Metal"
+          - "-framework MetalKit"
+          - "-framework Foundation"
+        PRODUCT_BUNDLE_IDENTIFIER: com.voxpopuli.app
+
+  VoxPopuliTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: VoxPopuliTests
+    dependencies:
+      - target: VoxPopuli

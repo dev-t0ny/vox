@@ -1,0 +1,8 @@
+build/
+DerivedData/
+xcuserdata
+Libraries/*/build/
+*.bin
+*.gguf
+.DS_Store
+*.swp
