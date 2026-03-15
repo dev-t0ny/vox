@@ -190,6 +190,12 @@ final class MenuBarController: NSObject {
         hotkeyItem.submenu = hotkeyMenu
         menu.addItem(hotkeyItem)
 
+        // Auto-paste
+        let pasteItem = NSMenuItem(title: "  Auto-paste", action: #selector(toggleAutoPaste(_:)), keyEquivalent: "")
+        pasteItem.target = self
+        pasteItem.state = appState.autoPasteEnabled ? .on : .off
+        menu.addItem(pasteItem)
+
         // AI Cleanup
         let cleanupItem = NSMenuItem(title: "  AI Cleanup", action: #selector(toggleAICleanup(_:)), keyEquivalent: "")
         cleanupItem.target = self
@@ -221,6 +227,11 @@ final class MenuBarController: NSObject {
     @objc private func selectLanguage(_ sender: NSMenuItem) {
         guard let code = sender.representedObject as? String else { return }
         appState.selectedLanguage = code
+        appState.save()
+    }
+
+    @objc private func toggleAutoPaste(_ sender: NSMenuItem) {
+        appState.autoPasteEnabled.toggle()
         appState.save()
     }
 

@@ -139,10 +139,15 @@ final class TranscriptionPipeline {
                 print("🎙️ [Pipeline] Final text: \"\(finalText)\"")
                 DispatchQueue.main.async {
                     self.appState.addTranscript(finalText, duration: duration)
-                    self.textOutput.type(finalText)
-                    self.floatingPill.showTranscript(finalText)
-                    self.appState.status = .idle
-                    // Don't call finish() here — pill auto-fades after showing text
+                    self.textOutput.autoPasteEnabled = self.appState.autoPasteEnabled
+                    let didPaste = self.textOutput.type(finalText, targetApp: self.targetApp)
+                    if didPaste {
+                        self.finish()
+                    } else {
+                        // Show transcript in pill so user knows it's on clipboard
+                        self.floatingPill.showTranscript(finalText)
+                        self.appState.status = .idle
+                    }
                 }
             } catch {
                 print("❌ [Pipeline] Transcription error: \(error)")

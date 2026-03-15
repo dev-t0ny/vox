@@ -25,6 +25,7 @@ final class AppState: ObservableObject {
     @Published var selectedWhisperModel: String = UserDefaults.standard.string(forKey: "whisperModel") ?? "large-v3"
     @Published var selectedLanguage: String = UserDefaults.standard.string(forKey: "language") ?? "auto"
     @Published var aiCleanupEnabled: Bool = UserDefaults.standard.bool(forKey: "aiCleanup")
+    @Published var autoPasteEnabled: Bool = UserDefaults.standard.object(forKey: "autoPaste") != nil ? UserDefaults.standard.bool(forKey: "autoPaste") : true
     @Published var hotkeyMode: HotkeyMode = HotkeyMode(rawValue: UserDefaults.standard.string(forKey: "hotkeyMode") ?? "") ?? .holdToTalk
 
     /// Recent transcriptions (newest first, max 20)
@@ -42,6 +43,7 @@ final class AppState: ObservableObject {
         UserDefaults.standard.set(selectedWhisperModel, forKey: "whisperModel")
         UserDefaults.standard.set(selectedLanguage, forKey: "language")
         UserDefaults.standard.set(aiCleanupEnabled, forKey: "aiCleanup")
+        UserDefaults.standard.set(autoPasteEnabled, forKey: "autoPaste")
         UserDefaults.standard.set(hotkeyMode.rawValue, forKey: "hotkeyMode")
     }
 }
