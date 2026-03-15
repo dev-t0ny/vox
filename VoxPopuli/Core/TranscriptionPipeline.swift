@@ -71,6 +71,7 @@ final class TranscriptionPipeline {
     }
 
     private var recordingStartTime: Date?
+    private var targetApp: NSRunningApplication?
 
     func startRecording() {
         guard whisperEngine.isLoaded else {
@@ -78,6 +79,10 @@ final class TranscriptionPipeline {
             return
         }
         do {
+            // Capture the frontmost app NOW — before anything changes focus
+            targetApp = NSWorkspace.shared.frontmostApplication
+            print("🎙️ [Pipeline] Target app: \(targetApp?.localizedName ?? "unknown")")
+
             try audioPipeline.startCapture()
             recordingStartTime = Date()
             appState.status = .listening
@@ -137,7 +142,7 @@ final class TranscriptionPipeline {
                     // Delay paste by 250ms to let the Option key fully release
                     // Otherwise Cmd+V becomes Option+Cmd+V which doesn't paste
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                        self.textOutput.type(finalText)
+                        self.textOutput.type(finalText, targetApp: self.targetApp)
                         self.finish()
                     }
                 }

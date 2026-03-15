@@ -3,8 +3,15 @@ import UserNotifications
 
 final class TextOutput {
 
-    func type(_ text: String) {
+    func type(_ text: String, targetApp: NSRunningApplication? = nil) {
         print("📋 [TextOutput] Typing: \"\(text.prefix(60))\"")
+
+        // Re-focus the target app that was active when recording started
+        if let app = targetApp {
+            print("📋 [TextOutput] Re-activating: \(app.localizedName ?? "unknown")")
+            app.activate()
+            Thread.sleep(forTimeInterval: 0.15) // Wait for app to come to front
+        }
 
         // Put text on clipboard first (needed for all paste strategies)
         let pasteboard = NSPasteboard.general
@@ -49,14 +56,7 @@ final class TextOutput {
     // MARK: - AppleScript paste (inline, triggers permission prompt from our app)
 
     private func pasteViaAppleScript() -> Bool {
-        guard let frontApp = NSWorkspace.shared.frontmostApplication,
-              let appName = frontApp.localizedName else { return false }
-
-        print("📋 [TextOutput] Trying AppleScript paste to: \(appName)")
-
-        // Activate the target app first
-        frontApp.activate()
-        Thread.sleep(forTimeInterval: 0.05)
+        print("📋 [TextOutput] Trying AppleScript paste")
 
         let script = NSAppleScript(source: """
             tell application "System Events"
@@ -77,28 +77,11 @@ final class TextOutput {
     // MARK: - osascript paste (subprocess fallback)
 
     private func pasteViaOsascript() -> Bool {
-        // Get the frontmost app name to target it specifically
-        guard let frontApp = NSWorkspace.shared.frontmostApplication,
-              let appName = frontApp.localizedName else {
-            print("📋 [TextOutput] Can't determine frontmost app")
-            return false
-        }
-
-        print("📋 [TextOutput] Frontmost app: \(appName) (pid: \(frontApp.processIdentifier))")
-
-        // First make sure the target app is active
-        frontApp.activate()
-
-        // Small delay to ensure app is focused
-        Thread.sleep(forTimeInterval: 0.1)
-
         let task = Process()
         task.launchPath = "/usr/bin/osascript"
         task.arguments = ["-e", """
             tell application "System Events"
-                tell process "\(appName)"
-                    keystroke "v" using command down
-                end tell
+                keystroke "v" using command down
             end tell
         """]
 
