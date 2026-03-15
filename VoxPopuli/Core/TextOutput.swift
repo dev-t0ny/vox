@@ -44,20 +44,44 @@ final class TextOutput {
     // MARK: - osascript paste (uses Automation permission, not Accessibility)
 
     private func pasteViaOsascript() -> Bool {
+        // Get the frontmost app name to target it specifically
+        guard let frontApp = NSWorkspace.shared.frontmostApplication,
+              let appName = frontApp.localizedName else {
+            print("📋 [TextOutput] Can't determine frontmost app")
+            return false
+        }
+
+        print("📋 [TextOutput] Frontmost app: \(appName) (pid: \(frontApp.processIdentifier))")
+
+        // First make sure the target app is active
+        frontApp.activate()
+
+        // Small delay to ensure app is focused
+        Thread.sleep(forTimeInterval: 0.1)
+
         let task = Process()
         task.launchPath = "/usr/bin/osascript"
         task.arguments = ["-e", """
             tell application "System Events"
-                keystroke "v" using command down
+                tell process "\(appName)"
+                    keystroke "v" using command down
+                end tell
             end tell
         """]
 
-        let pipe = Pipe()
-        task.standardError = pipe
+        let errPipe = Pipe()
+        task.standardError = errPipe
 
         do {
             try task.run()
             task.waitUntilExit()
+
+            if task.terminationStatus != 0 {
+                let errData = errPipe.fileHandleForReading.readDataToEndOfFile()
+                let errStr = String(data: errData, encoding: .utf8) ?? "unknown"
+                print("📋 [TextOutput] osascript error: \(errStr)")
+            }
+
             return task.terminationStatus == 0
         } catch {
             print("📋 [TextOutput] osascript failed: \(error)")
