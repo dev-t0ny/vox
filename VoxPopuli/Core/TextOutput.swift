@@ -13,6 +13,12 @@ final class TextOutput {
         pasteboard.setString(text, forType: .string)
 
         // Try paste strategies in order
+        if pasteViaAppleScript() {
+            print("✅ [TextOutput] Pasted via AppleScript")
+            restoreClipboardLater(previousString)
+            return
+        }
+
         if pasteViaOsascript() {
             print("✅ [TextOutput] Pasted via osascript")
             restoreClipboardLater(previousString)
@@ -22,7 +28,6 @@ final class TextOutput {
         if AXIsProcessTrusted() {
             if insertViaAccessibility(text) {
                 print("✅ [TextOutput] Inserted via Accessibility API")
-                // Restore clipboard immediately since we didn't use it
                 if let prev = previousString {
                     pasteboard.clearContents()
                     pasteboard.setString(prev, forType: .string)
@@ -41,7 +46,35 @@ final class TextOutput {
         print("📋 [TextOutput] Text on clipboard — Cmd+V to paste")
     }
 
-    // MARK: - osascript paste (uses Automation permission, not Accessibility)
+    // MARK: - AppleScript paste (inline, triggers permission prompt from our app)
+
+    private func pasteViaAppleScript() -> Bool {
+        guard let frontApp = NSWorkspace.shared.frontmostApplication,
+              let appName = frontApp.localizedName else { return false }
+
+        print("📋 [TextOutput] Trying AppleScript paste to: \(appName)")
+
+        // Activate the target app first
+        frontApp.activate()
+        Thread.sleep(forTimeInterval: 0.05)
+
+        let script = NSAppleScript(source: """
+            tell application "System Events"
+                keystroke "v" using command down
+            end tell
+        """)
+
+        var errorInfo: NSDictionary?
+        script?.executeAndReturnError(&errorInfo)
+
+        if let error = errorInfo {
+            print("📋 [TextOutput] AppleScript error: \(error)")
+            return false
+        }
+        return true
+    }
+
+    // MARK: - osascript paste (subprocess fallback)
 
     private func pasteViaOsascript() -> Bool {
         // Get the frontmost app name to target it specifically
