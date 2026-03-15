@@ -70,6 +70,8 @@ final class TranscriptionPipeline {
         }
     }
 
+    private var recordingStartTime: Date?
+
     func startRecording() {
         guard whisperEngine.isLoaded else {
             print("❌ [Pipeline] Model not loaded, can't record")
@@ -77,6 +79,7 @@ final class TranscriptionPipeline {
         }
         do {
             try audioPipeline.startCapture()
+            recordingStartTime = Date()
             appState.status = .listening
             floatingPill.show(near: NSEvent.mouseLocation)
             print("🎙️ [Pipeline] Recording started")
@@ -126,9 +129,11 @@ final class TranscriptionPipeline {
                     finalText = self.voiceCommandProcessor.apply(rawText)
                 }
 
+                let duration = self.recordingStartTime.map { Date().timeIntervalSince($0) } ?? 0
                 print("🎙️ [Pipeline] Final text: \"\(finalText)\"")
                 print("🎙️ [Pipeline] Typing text into focused app...")
                 DispatchQueue.main.async {
+                    self.appState.addTranscript(finalText, duration: duration)
                     self.textOutput.type(finalText)
                     self.finish()
                 }
