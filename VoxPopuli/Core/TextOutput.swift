@@ -1,40 +1,84 @@
 import Cocoa
-import Carbon.HIToolbox
 import UserNotifications
 
 final class TextOutput {
 
     func type(_ text: String) {
-        print("📋 [TextOutput] Typing: \"\(text.prefix(60))...\"")
+        print("📋 [TextOutput] Typing: \"\(text.prefix(60))\"")
 
-        // Strategy 1: Try Accessibility API (best — inserts at cursor)
-        if AXIsProcessTrusted() && insertViaAccessibility(text) {
-            print("✅ [TextOutput] Inserted via Accessibility API")
+        // Put text on clipboard first (needed for all paste strategies)
+        let pasteboard = NSPasteboard.general
+        let previousString = pasteboard.string(forType: .string)
+        pasteboard.clearContents()
+        pasteboard.setString(text, forType: .string)
+
+        // Try paste strategies in order
+        if pasteViaOsascript() {
+            print("✅ [TextOutput] Pasted via osascript")
+            restoreClipboardLater(previousString)
             return
         }
 
-        // Strategy 2: Clipboard + CGEvent Cmd+V
-        if pasteViaClipboard(text, method: .cgEvent) {
-            print("✅ [TextOutput] Pasted via CGEvent Cmd+V")
-            return
+        if AXIsProcessTrusted() {
+            if insertViaAccessibility(text) {
+                print("✅ [TextOutput] Inserted via Accessibility API")
+                // Restore clipboard immediately since we didn't use it
+                if let prev = previousString {
+                    pasteboard.clearContents()
+                    pasteboard.setString(prev, forType: .string)
+                }
+                return
+            }
+
+            if pasteViaCGEvent() {
+                print("✅ [TextOutput] Pasted via CGEvent")
+                restoreClipboardLater(previousString)
+                return
+            }
         }
 
-        // Strategy 3: Clipboard + key simulation via CGEvent source
-        if pasteViaClipboard(text, method: .keyboardEvent) {
-            print("✅ [TextOutput] Pasted via keyboard event")
-            return
-        }
-
-        // Strategy 4: Just put it on clipboard and notify
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(text, forType: .string)
-        print("📋 [TextOutput] Text copied to clipboard — press Cmd+V to paste")
-
-        // Show a brief notification
-        showCopiedNotification()
+        // Last resort: text is on clipboard, notify user
+        print("📋 [TextOutput] Text on clipboard — Cmd+V to paste")
     }
 
-    // MARK: - Accessibility API
+    // MARK: - osascript paste (uses Automation permission, not Accessibility)
+
+    private func pasteViaOsascript() -> Bool {
+        let task = Process()
+        task.launchPath = "/usr/bin/osascript"
+        task.arguments = ["-e", """
+            tell application "System Events"
+                keystroke "v" using command down
+            end tell
+        """]
+
+        let pipe = Pipe()
+        task.standardError = pipe
+
+        do {
+            try task.run()
+            task.waitUntilExit()
+            return task.terminationStatus == 0
+        } catch {
+            print("📋 [TextOutput] osascript failed: \(error)")
+            return false
+        }
+    }
+
+    // MARK: - CGEvent paste
+
+    private func pasteViaCGEvent() -> Bool {
+        let source = CGEventSource(stateID: .combinedSessionState)
+        guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),
+              let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false) else { return false }
+        keyDown.flags = .maskCommand
+        keyUp.flags = .maskCommand
+        keyDown.post(tap: .cgAnnotatedSessionEventTap)
+        keyUp.post(tap: .cgAnnotatedSessionEventTap)
+        return true
+    }
+
+    // MARK: - Accessibility API (direct text insertion)
 
     private func insertViaAccessibility(_ text: String) -> Bool {
         let systemWide = AXUIElementCreateSystemWide()
@@ -76,72 +120,13 @@ final class TextOutput {
         return true
     }
 
-    // MARK: - Clipboard Paste
+    // MARK: - Helpers
 
-    private enum PasteMethod {
-        case cgEvent
-        case keyboardEvent
-    }
-
-    private func pasteViaClipboard(_ text: String, method: PasteMethod) -> Bool {
-        let pasteboard = NSPasteboard.general
-        let previousString = pasteboard.string(forType: .string)
-
-        pasteboard.clearContents()
-        pasteboard.setString(text, forType: .string)
-
-        let success: Bool
-        switch method {
-        case .cgEvent:
-            success = simulateCmdV()
-        case .keyboardEvent:
-            success = simulateCmdVViaKeyEvent()
+    private func restoreClipboardLater(_ previousString: String?) {
+        guard let previous = previousString else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(previous, forType: .string)
         }
-
-        // Restore clipboard after delay
-        if success, let previous = previousString {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                pasteboard.clearContents()
-                pasteboard.setString(previous, forType: .string)
-            }
-        }
-
-        return success
-    }
-
-    private func simulateCmdV() -> Bool {
-        let source = CGEventSource(stateID: .combinedSessionState)
-        guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),
-              let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false) else {
-            return false
-        }
-        keyDown.flags = .maskCommand
-        keyUp.flags = .maskCommand
-        keyDown.post(tap: .cgAnnotatedSessionEventTap)
-        keyUp.post(tap: .cgAnnotatedSessionEventTap)
-        return true
-    }
-
-    private func simulateCmdVViaKeyEvent() -> Bool {
-        let source = CGEventSource(stateID: .hidSystemState)
-        guard let keyDown = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: true),
-              let keyUp = CGEvent(keyboardEventSource: source, virtualKey: 9, keyDown: false) else {
-            return false
-        }
-        keyDown.flags = .maskCommand
-        keyUp.flags = .maskCommand
-        keyDown.post(tap: .cghidEventTap)
-        keyUp.post(tap: .cghidEventTap)
-        return true
-    }
-
-    // MARK: - Notification
-
-    private func showCopiedNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Vox"
-        content.body = "Transcription copied — Cmd+V to paste"
-        let request = UNNotificationRequest(identifier: "vox-copied", content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(request)
     }
 }
