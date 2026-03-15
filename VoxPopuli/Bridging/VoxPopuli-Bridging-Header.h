@@ -1,6 +1,8 @@
 #ifndef VoxPopuli_Bridging_Header_h
 #define VoxPopuli_Bridging_Header_h
 
-// Add C/C++ library imports here (e.g., whisper.cpp, llama.cpp)
+#include "whisper.h"
+#include "llama.h"
+#include "ggml.h"
 
 #endif /* VoxPopuli_Bridging_Header_h */
