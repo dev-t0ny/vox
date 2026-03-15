@@ -32,7 +32,7 @@ struct SettingsView: View {
                 .pickerStyle(.segmented)
                 .onChange(of: appState.hotkeyMode) { _ in appState.save() }
 
-                Text("Right Option key")
+                Text("Left Option key")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

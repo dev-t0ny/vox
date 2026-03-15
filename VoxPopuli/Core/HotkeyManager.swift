@@ -22,7 +22,7 @@ final class HotkeyManager {
 
     weak var delegate: HotkeyManagerDelegate?
     var mode: HotkeyMode = .doubleTap
-    var targetKeyCode: CGKeyCode = 61 // Right Option
+    var targetKeyCode: CGKeyCode = 58 // Left Option (kVK_Option)
 
     fileprivate var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
