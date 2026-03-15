@@ -6,7 +6,7 @@ final class FloatingPill {
 
     private var panel: NSPanel?
     private var waveformView: WaveformView?
-    private let pillSize = NSSize(width: 120, height: 36)
+    private let pillSize = NSSize(width: 180, height: 48)
 
     // MARK: - Setup
 

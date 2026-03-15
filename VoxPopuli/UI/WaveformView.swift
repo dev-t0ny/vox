@@ -2,23 +2,21 @@ import Cocoa
 
 final class WaveformView: NSView {
 
-    private let barCount = 24
+    private let barCount = 32
     private var rmsHistory: [Float] = []
     private var historyIndex: Int = 0
+    private var smoothedLevels: [Float] = []
     private var displayLink: CVDisplayLink?
-    private var isAnimating = false
+    private var animationPhase: Double = 0
 
     var rmsLevel: Float = 0.0 {
-        didSet {
-            appendToHistory(rmsLevel)
-        }
+        didSet { appendToHistory(rmsLevel) }
     }
-
-    // MARK: - Init
 
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         rmsHistory = [Float](repeating: 0.0, count: barCount)
+        smoothedLevels = [Float](repeating: 0.0, count: barCount)
         wantsLayer = true
         layer?.backgroundColor = .clear
         startDisplayLink()
@@ -27,29 +25,22 @@ final class WaveformView: NSView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         rmsHistory = [Float](repeating: 0.0, count: barCount)
+        smoothedLevels = [Float](repeating: 0.0, count: barCount)
         startDisplayLink()
     }
 
-    deinit {
-        stopDisplayLink()
-    }
-
-    // MARK: - Display Link (smooth 60fps animation)
+    deinit { stopDisplayLink() }
 
     private func startDisplayLink() {
         guard displayLink == nil else { return }
         CVDisplayLinkCreateWithActiveCGDisplays(&displayLink)
         guard let link = displayLink else { return }
-
         CVDisplayLinkSetOutputCallback(link, { (_, _, _, _, _, userInfo) -> CVReturn in
-            guard let userInfo = userInfo else { return kCVReturnSuccess }
+            guard let userInfo else { return kCVReturnSuccess }
             let view = Unmanaged<WaveformView>.fromOpaque(userInfo).takeUnretainedValue()
-            DispatchQueue.main.async {
-                view.needsDisplay = true
-            }
+            DispatchQueue.main.async { view.needsDisplay = true }
             return kCVReturnSuccess
         }, Unmanaged.passUnretained(self).toOpaque())
-
         CVDisplayLinkStart(link)
     }
 
@@ -59,52 +50,55 @@ final class WaveformView: NSView {
         displayLink = nil
     }
 
-    // MARK: - History
-
     private func appendToHistory(_ value: Float) {
         guard rmsHistory.count == barCount else { return }
         rmsHistory[historyIndex % barCount] = value
         historyIndex += 1
     }
 
-    // MARK: - Drawing
-
     override func draw(_ dirtyRect: NSRect) {
-        guard let context = NSGraphicsContext.current?.cgContext else { return }
-        context.clear(dirtyRect)
+        guard let ctx = NSGraphicsContext.current?.cgContext else { return }
+        ctx.clear(dirtyRect)
+
+        animationPhase += 0.04
 
         let count = barCount
-        let spacing: CGFloat = 1.5
-        let totalSpacing = spacing * CGFloat(count - 1)
-        let barWidth = (bounds.width - totalSpacing) / CGFloat(count)
+        let spacing: CGFloat = 2.0
+        let barWidth = (bounds.width - spacing * CGFloat(count - 1)) / CGFloat(count)
         let centerY = bounds.height / 2.0
 
         for i in 0..<count {
             let index = (historyIndex + i) % count
-            let rawAmplitude = rmsHistory[index]
+            let raw = rmsHistory[index]
 
-            // Amplify the signal — raw RMS is typically 0.001 to 0.1
-            // Scale up aggressively so speech is visible
-            let amplified = min(rawAmplitude * 12.0, 1.0)
+            // Massive amplification — raw RMS is 0.001-0.1, we want 0-1
+            let amplified = min(raw * 50.0, 1.0)
 
-            // Smooth with a minimum so bars are always visible
-            let amplitude = max(0.08, amplified)
+            // Smooth transition (ease toward target)
+            let target = max(0.05, amplified)
+            smoothedLevels[i] += (target - smoothedLevels[i]) * 0.3
+            let level = smoothedLevels[i]
 
-            let barHeight = CGFloat(amplitude) * bounds.height * 0.85
+            // Add a subtle idle wave so it never looks frozen
+            let idleWave = Float(sin(animationPhase + Double(i) * 0.3)) * 0.03 + 0.05
+            let finalLevel = max(level, idleWave)
+
+            let barHeight = CGFloat(finalLevel) * bounds.height * 0.9
             let x = CGFloat(i) * (barWidth + spacing)
             let y = centerY - barHeight / 2.0
-
             let barRect = CGRect(x: x, y: y, width: barWidth, height: barHeight)
 
-            // Color: white with opacity that follows amplitude
-            let opacity = 0.4 + 0.6 * Double(amplitude)
-            context.setFillColor(NSColor.white.withAlphaComponent(CGFloat(opacity)).cgColor)
+            // Gradient color: purple → cyan based on amplitude
+            let t = CGFloat(finalLevel)
+            let r = 0.6 * (1.0 - t) + 0.0 * t   // purple to cyan
+            let g = 0.2 * (1.0 - t) + 0.9 * t
+            let b = 1.0 * (1.0 - t) + 1.0 * t
+            let alpha = 0.5 + 0.5 * t
 
-            // Rounded bars
-            let radius = min(barWidth / 2, 2.0)
-            let path = CGPath(roundedRect: barRect, cornerWidth: radius, cornerHeight: radius, transform: nil)
-            context.addPath(path)
-            context.fillPath()
+            ctx.setFillColor(CGColor(red: r, green: g, blue: b, alpha: alpha))
+            let radius = min(barWidth / 2, 3.0)
+            ctx.addPath(CGPath(roundedRect: barRect, cornerWidth: radius, cornerHeight: radius, transform: nil))
+            ctx.fillPath()
         }
     }
 }

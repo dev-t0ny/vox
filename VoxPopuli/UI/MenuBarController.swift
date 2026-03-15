@@ -51,17 +51,6 @@ final class MenuBarController: NSObject {
         addStatusSection(to: menu)
         menu.addItem(NSMenuItem.separator())
 
-        // ─── Record button ───
-        let recordTitle = appState.status == .listening ? "⏹  Stop Recording" : "🎙  Start Recording"
-        let recordItem = NSMenuItem(title: recordTitle, action: #selector(toggleRecording(_:)), keyEquivalent: "")
-        recordItem.target = self
-        recordItem.attributedTitle = NSAttributedString(
-            string: recordTitle,
-            attributes: [.font: NSFont.systemFont(ofSize: 13, weight: .medium)]
-        )
-        menu.addItem(recordItem)
-        menu.addItem(NSMenuItem.separator())
-
         // ─── Recent Transcriptions ───
         addTranscriptSection(to: menu)
         menu.addItem(NSMenuItem.separator())
