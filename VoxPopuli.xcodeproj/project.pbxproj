@@ -24,6 +24,8 @@
 		E0835D952628343319D364A4 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0B5475D2C40DB79B370A7 /* AppState.swift */; };
 		E45C4EE7B814805858FDFE50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB00459D3DDCA8ED959572E7 /* Assets.xcassets */; };
 		EEC170D9187FB8362067FE83 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BB0A98ABFFC7DFF4598613 /* WaveformView.swift */; };
+		F17099FDCA5268E8D70A5720 /* TranscriptionPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F1609F296F76F0EB7CFC1C /* TranscriptionPipeline.swift */; };
+		F614735D12EC50E4906D089F /* TextProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B45BD200B851586100EAF3 /* TextProcessor.swift */; };
 		FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780BC07D982648144B6F041C /* RingBuffer.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,9 +47,11 @@
 		1C87B3F8F180743E5BCA0B76 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		27059E384C33344FF71183C0 /* VoxPopuli.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VoxPopuli.entitlements; sourceTree = "<group>"; };
 		32BB0A98ABFFC7DFF4598613 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+		32F1609F296F76F0EB7CFC1C /* TranscriptionPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptionPipeline.swift; sourceTree = "<group>"; };
 		43B0B5475D2C40DB79B370A7 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		49212079AC5620384FCF2D8C /* ModelManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerTests.swift; sourceTree = "<group>"; };
 		4DB5589F43D617613D964813 /* VoxPopuliApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxPopuliApp.swift; sourceTree = "<group>"; };
+		56B45BD200B851586100EAF3 /* TextProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextProcessor.swift; sourceTree = "<group>"; };
 		5929CE6EC834E8CD6E806AF1 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
 		73B0A4622A1DDB92C959206C /* AudioPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPipeline.swift; sourceTree = "<group>"; };
 		780BC07D982648144B6F041C /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
@@ -82,6 +86,8 @@
 				857E1BF5B4B6C81B66EA73EF /* ModelManager.swift */,
 				780BC07D982648144B6F041C /* RingBuffer.swift */,
 				0CF5A294A5D15E9E4D3E940D /* TextOutput.swift */,
+				56B45BD200B851586100EAF3 /* TextProcessor.swift */,
+				32F1609F296F76F0EB7CFC1C /* TranscriptionPipeline.swift */,
 				182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */,
 				91E34E4AA317D3E3CD0CAAF3 /* WhisperEngine.swift */,
 			);
@@ -261,6 +267,8 @@
 				FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */,
 				0890EF643240B4384C6184DA /* SettingsView.swift in Sources */,
 				C1FE47A95B3D9487D6B82B3C /* TextOutput.swift in Sources */,
+				F614735D12EC50E4906D089F /* TextProcessor.swift in Sources */,
+				F17099FDCA5268E8D70A5720 /* TranscriptionPipeline.swift in Sources */,
 				094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */,
 				DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */,
 				EEC170D9187FB8362067FE83 /* WaveformView.swift in Sources */,
@@ -320,23 +328,20 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/src",
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src",
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-blas",
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-metal",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/src",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-blas",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-metal",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/src",
 				);
 				OTHER_LDFLAGS = (
+					"-lllama",
 					"-lwhisper",
 					"-lggml",
-					"-lggml-base",
-					"-lggml-metal",
 					"-lggml-cpu",
+					"-lggml-metal",
 					"-lggml-blas",
-					"-lllama",
+					"-lggml-base",
 					"-lc++",
 					"-framework Accelerate",
 					"-framework Metal",
@@ -390,23 +395,20 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/src",
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src",
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-blas",
-					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/ggml/src/ggml-metal",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/src",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-blas",
 					"$(PROJECT_DIR)/Libraries/llama.cpp/build/ggml/src/ggml-metal",
+					"$(PROJECT_DIR)/Libraries/whisper.cpp/build/src",
 				);
 				OTHER_LDFLAGS = (
+					"-lllama",
 					"-lwhisper",
 					"-lggml",
-					"-lggml-base",
-					"-lggml-metal",
 					"-lggml-cpu",
+					"-lggml-metal",
 					"-lggml-blas",
-					"-lllama",
+					"-lggml-base",
 					"-lc++",
 					"-framework Accelerate",
 					"-framework Metal",
