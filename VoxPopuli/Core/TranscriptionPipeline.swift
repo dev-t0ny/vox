@@ -131,11 +131,15 @@ final class TranscriptionPipeline {
 
                 let duration = self.recordingStartTime.map { Date().timeIntervalSince($0) } ?? 0
                 print("🎙️ [Pipeline] Final text: \"\(finalText)\"")
-                print("🎙️ [Pipeline] Typing text into focused app...")
+                print("🎙️ [Pipeline] Waiting 250ms for modifier keys to release...")
                 DispatchQueue.main.async {
                     self.appState.addTranscript(finalText, duration: duration)
-                    self.textOutput.type(finalText)
-                    self.finish()
+                    // Delay paste by 250ms to let the Option key fully release
+                    // Otherwise Cmd+V becomes Option+Cmd+V which doesn't paste
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        self.textOutput.type(finalText)
+                        self.finish()
+                    }
                 }
             } catch {
                 print("❌ [Pipeline] Transcription error: \(error)")

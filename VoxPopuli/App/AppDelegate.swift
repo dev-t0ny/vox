@@ -19,7 +19,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menuBarController.setup()
         print("🎙️ Menu bar dot created")
 
-        menuBarController.onLeftClick = { [weak self] in self?.toggleRecording() }
+        menuBarController.onToggleRecording = { [weak self] in self?.toggleRecording() }
+        menuBarController.onModelChange = { [weak self] name in
+            print("🎙️ Switching model to: \(name)")
+            self?.pipeline.loadModel()
+        }
 
         hotkeyManager.delegate = self
         hotkeyManager.mode = appState.hotkeyMode
