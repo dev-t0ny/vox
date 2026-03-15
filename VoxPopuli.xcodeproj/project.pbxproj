@@ -7,18 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0890EF643240B4384C6184DA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65EAECFE0E8D0D4D654D1B7 /* SettingsView.swift */; };
 		094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */; };
+		1C99BFAD4131AED08C47AAE3 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5929CE6EC834E8CD6E806AF1 /* MenuBarController.swift */; };
 		2284F7FFCF9921091B109DE9 /* AudioPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B0A4622A1DDB92C959206C /* AudioPipeline.swift */; };
 		3D6F285A5F6A0F6937725340 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857E1BF5B4B6C81B66EA73EF /* ModelManager.swift */; };
 		404AFC6C62937EAABF4FF1F8 /* ModelManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49212079AC5620384FCF2D8C /* ModelManagerTests.swift */; };
 		6AAFE80A39F412A5C3A731BC /* VoiceCommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */; };
 		6D312DBD24E836DAA58BA12D /* WhisperEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E34E4AA317D3E3CD0CAAF3 /* WhisperEngine.swift */; };
 		942E7857C1FB145B9B199F48 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */; };
+		A1A1FC076DAEF8C45C8C00C1 /* FloatingPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AB0F2EDAEFDB888932E59A /* FloatingPill.swift */; };
 		C1FE47A95B3D9487D6B82B3C /* TextOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5A294A5D15E9E4D3E940D /* TextOutput.swift */; };
 		CE3627B2289E039F67E8BD4D /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87B3F8F180743E5BCA0B76 /* HotkeyManager.swift */; };
 		DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB5589F43D617613D964813 /* VoxPopuliApp.swift */; };
 		DCF45E9CE52635131EA630CE /* RingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B51C824D820F83450265A9 /* RingBufferTests.swift */; };
+		E0835D952628343319D364A4 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B0B5475D2C40DB79B370A7 /* AppState.swift */; };
 		E45C4EE7B814805858FDFE50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB00459D3DDCA8ED959572E7 /* Assets.xcassets */; };
+		EEC170D9187FB8362067FE83 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BB0A98ABFFC7DFF4598613 /* WaveformView.swift */; };
 		FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780BC07D982648144B6F041C /* RingBuffer.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,13 +44,18 @@
 		182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessor.swift; sourceTree = "<group>"; };
 		1C87B3F8F180743E5BCA0B76 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		27059E384C33344FF71183C0 /* VoxPopuli.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VoxPopuli.entitlements; sourceTree = "<group>"; };
+		32BB0A98ABFFC7DFF4598613 /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+		43B0B5475D2C40DB79B370A7 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		49212079AC5620384FCF2D8C /* ModelManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerTests.swift; sourceTree = "<group>"; };
 		4DB5589F43D617613D964813 /* VoxPopuliApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxPopuliApp.swift; sourceTree = "<group>"; };
+		5929CE6EC834E8CD6E806AF1 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
 		73B0A4622A1DDB92C959206C /* AudioPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPipeline.swift; sourceTree = "<group>"; };
 		780BC07D982648144B6F041C /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
 		857E1BF5B4B6C81B66EA73EF /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		882D617AA7925B96E699B858 /* VoxPopuliTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoxPopuliTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		91E34E4AA317D3E3CD0CAAF3 /* WhisperEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperEngine.swift; sourceTree = "<group>"; };
+		B65EAECFE0E8D0D4D654D1B7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D4AB0F2EDAEFDB888932E59A /* FloatingPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPill.swift; sourceTree = "<group>"; };
 		D8B51C824D820F83450265A9 /* RingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBufferTests.swift; sourceTree = "<group>"; };
 		EE97C1F346BA32DA60FA28EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessorTests.swift; sourceTree = "<group>"; };
@@ -58,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */,
+				43B0B5475D2C40DB79B370A7 /* AppState.swift */,
 				4DB5589F43D617613D964813 /* VoxPopuliApp.swift */,
 			);
 			path = App;
@@ -121,6 +132,7 @@
 				B1AB1ED8F3F2BC2F50B0213A /* Bridging */,
 				20C2E01585D906901A0A0DE7 /* Core */,
 				80BD5D1C8B3EF27095771E54 /* Resources */,
+				ED4BA3D885D38917116FA100 /* UI */,
 			);
 			path = VoxPopuli;
 			sourceTree = "<group>";
@@ -132,6 +144,17 @@
 				72EF93430F04CB35A53EED1B /* VoxPopuliTests */,
 				528291D08B356EAF6C158F91 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		ED4BA3D885D38917116FA100 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				D4AB0F2EDAEFDB888932E59A /* FloatingPill.swift */,
+				5929CE6EC834E8CD6E806AF1 /* MenuBarController.swift */,
+				B65EAECFE0E8D0D4D654D1B7 /* SettingsView.swift */,
+				32BB0A98ABFFC7DFF4598613 /* WaveformView.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,13 +252,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				942E7857C1FB145B9B199F48 /* AppDelegate.swift in Sources */,
+				E0835D952628343319D364A4 /* AppState.swift in Sources */,
 				2284F7FFCF9921091B109DE9 /* AudioPipeline.swift in Sources */,
+				A1A1FC076DAEF8C45C8C00C1 /* FloatingPill.swift in Sources */,
 				CE3627B2289E039F67E8BD4D /* HotkeyManager.swift in Sources */,
+				1C99BFAD4131AED08C47AAE3 /* MenuBarController.swift in Sources */,
 				3D6F285A5F6A0F6937725340 /* ModelManager.swift in Sources */,
 				FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */,
+				0890EF643240B4384C6184DA /* SettingsView.swift in Sources */,
 				C1FE47A95B3D9487D6B82B3C /* TextOutput.swift in Sources */,
 				094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */,
 				DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */,
+				EEC170D9187FB8362067FE83 /* WaveformView.swift in Sources */,
 				6D312DBD24E836DAA58BA12D /* WhisperEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
