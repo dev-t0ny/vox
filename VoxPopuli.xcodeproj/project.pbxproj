@@ -8,8 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */; };
+		2284F7FFCF9921091B109DE9 /* AudioPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B0A4622A1DDB92C959206C /* AudioPipeline.swift */; };
+		3D6F285A5F6A0F6937725340 /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857E1BF5B4B6C81B66EA73EF /* ModelManager.swift */; };
+		404AFC6C62937EAABF4FF1F8 /* ModelManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49212079AC5620384FCF2D8C /* ModelManagerTests.swift */; };
 		6AAFE80A39F412A5C3A731BC /* VoiceCommandProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */; };
+		6D312DBD24E836DAA58BA12D /* WhisperEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E34E4AA317D3E3CD0CAAF3 /* WhisperEngine.swift */; };
 		942E7857C1FB145B9B199F48 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */; };
+		C1FE47A95B3D9487D6B82B3C /* TextOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF5A294A5D15E9E4D3E940D /* TextOutput.swift */; };
+		CE3627B2289E039F67E8BD4D /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87B3F8F180743E5BCA0B76 /* HotkeyManager.swift */; };
 		DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB5589F43D617613D964813 /* VoxPopuliApp.swift */; };
 		DCF45E9CE52635131EA630CE /* RingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B51C824D820F83450265A9 /* RingBufferTests.swift */; };
 		E45C4EE7B814805858FDFE50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FB00459D3DDCA8ED959572E7 /* Assets.xcassets */; };
@@ -29,11 +35,17 @@
 /* Begin PBXFileReference section */
 		00602C2F9C276D6CCBDF1650 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		02DAF41A5B9E277BA59463C0 /* VoxPopuli-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VoxPopuli-Bridging-Header.h"; sourceTree = "<group>"; };
+		0CF5A294A5D15E9E4D3E940D /* TextOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOutput.swift; sourceTree = "<group>"; };
 		182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessor.swift; sourceTree = "<group>"; };
+		1C87B3F8F180743E5BCA0B76 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		27059E384C33344FF71183C0 /* VoxPopuli.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VoxPopuli.entitlements; sourceTree = "<group>"; };
+		49212079AC5620384FCF2D8C /* ModelManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManagerTests.swift; sourceTree = "<group>"; };
 		4DB5589F43D617613D964813 /* VoxPopuliApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoxPopuliApp.swift; sourceTree = "<group>"; };
+		73B0A4622A1DDB92C959206C /* AudioPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPipeline.swift; sourceTree = "<group>"; };
 		780BC07D982648144B6F041C /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
+		857E1BF5B4B6C81B66EA73EF /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		882D617AA7925B96E699B858 /* VoxPopuliTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoxPopuliTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		91E34E4AA317D3E3CD0CAAF3 /* WhisperEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhisperEngine.swift; sourceTree = "<group>"; };
 		D8B51C824D820F83450265A9 /* RingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBufferTests.swift; sourceTree = "<group>"; };
 		EE97C1F346BA32DA60FA28EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessorTests.swift; sourceTree = "<group>"; };
@@ -54,8 +66,13 @@
 		20C2E01585D906901A0A0DE7 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				73B0A4622A1DDB92C959206C /* AudioPipeline.swift */,
+				1C87B3F8F180743E5BCA0B76 /* HotkeyManager.swift */,
+				857E1BF5B4B6C81B66EA73EF /* ModelManager.swift */,
 				780BC07D982648144B6F041C /* RingBuffer.swift */,
+				0CF5A294A5D15E9E4D3E940D /* TextOutput.swift */,
 				182545F7804A51CCB2AD1177 /* VoiceCommandProcessor.swift */,
+				91E34E4AA317D3E3CD0CAAF3 /* WhisperEngine.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -72,6 +89,7 @@
 		72EF93430F04CB35A53EED1B /* VoxPopuliTests */ = {
 			isa = PBXGroup;
 			children = (
+				49212079AC5620384FCF2D8C /* ModelManagerTests.swift */,
 				D8B51C824D820F83450265A9 /* RingBufferTests.swift */,
 				FA3985A0B29881062EC0577E /* VoiceCommandProcessorTests.swift */,
 			);
@@ -200,6 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				404AFC6C62937EAABF4FF1F8 /* ModelManagerTests.swift in Sources */,
 				DCF45E9CE52635131EA630CE /* RingBufferTests.swift in Sources */,
 				6AAFE80A39F412A5C3A731BC /* VoiceCommandProcessorTests.swift in Sources */,
 			);
@@ -210,9 +229,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				942E7857C1FB145B9B199F48 /* AppDelegate.swift in Sources */,
+				2284F7FFCF9921091B109DE9 /* AudioPipeline.swift in Sources */,
+				CE3627B2289E039F67E8BD4D /* HotkeyManager.swift in Sources */,
+				3D6F285A5F6A0F6937725340 /* ModelManager.swift in Sources */,
 				FFE4E3BAB700905B5DF5822B /* RingBuffer.swift in Sources */,
+				C1FE47A95B3D9487D6B82B3C /* TextOutput.swift in Sources */,
 				094E9D2AE8F12C77C2F1AE80 /* VoiceCommandProcessor.swift in Sources */,
 				DA6EA2E4B42F997145154338 /* VoxPopuliApp.swift in Sources */,
+				6D312DBD24E836DAA58BA12D /* WhisperEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
